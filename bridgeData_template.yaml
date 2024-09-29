@@ -5,7 +5,7 @@
 # !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!  !!!
 
 # The Horde URL. Do not change this unless you are using a custom Horde.
-horde_url: "https://aihorde.net/api/"
+horde_url: "https://api.aipowergrid.io/api"
 
 # The API key identifies a unique user in the Horde
 # Visit https://aihorde.net/register to create one before you can join
@@ -67,8 +67,8 @@ require_upfront_kudos: false
 ## Dreamer (Stable Diffusion Worker) ##
 #######################################
 
-# Worker name for running a Dreamer instance.
-dreamer_name: "An Awesome Dreamer"
+# Worker name for running a grid instance.
+dreamer_name: "An Awesome Grid Worker"
 
 # Max resolution (max pixels) supported.
 # Formula: `64 * 64 * 8 * max_power` (total pixels)
@@ -77,7 +77,7 @@ dreamer_name: "An Awesome Dreamer"
 # 18 = 768x768
 # 32 = 1024x1024
 # 50 = 1280x1280
-max_power: 8
+max_power: 32
 # Suggested values:
 #   8GB-10GB VRAM: 32 (no higher than 32)
 #   12GB-16GB VRAM: 32-64 (no higher than 64)
@@ -225,7 +225,8 @@ disable_disk_cache: false # Currently unused in reGen
 # The model name must match the name in the model reference or be a magic constant.
 # If you use `TOP` or `ALL` load commands, you should set a `civitai_api_token`. See that configuration entry for more information.
 models_to_load:
-  - "top 2"
+  - "AIPG_RED"
+  - "Juggernaut XL"
   #- "ALL MODELS"
   #- "TOP 3"
   #- "ALL SFW"
