@@ -1,0 +1,25 @@
+services:
+  regen:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.rocm
+      args:
+        - ROCM_VERSION=6.2.1
+        - PYTHON_VERSION=3.11
+        - USE_PIP_CACHE=true
+        - GIT_BRANCH=main
+        - GIT_OWNER=Haidra-Org
+    container_name: reGen
+    tty: true
+    #environment:
+    #  - FLASH_ATTENTION_USE_TRITON_ROCM=TRUE
+    group_add:
+      - video
+    volumes:
+      - ${AIWORKER_CACHE_HOME:-../models/}:/horde-worker-reGen/models/
+      - ${AIWORKER_BRIDGE_DATA_LOCATION:-../bridgeData.yaml}:/horde-worker-reGen/bridgeData.yaml:ro
+      - ${AIWORKER_LOGS_DIR:-../logs/}:/horde-worker-reGen/logs/
+    stop_grace_period: 2m
+    devices:
+      - /dev/kfd
+      - /dev/dri

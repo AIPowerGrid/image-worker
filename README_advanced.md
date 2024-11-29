@@ -1,33 +1,99 @@
-##  If you want the latest information or have questions, come to the [#local-workers](https://discord.com/channels/781145214752129095/1076124012305993768) channel in discord
+##  If you want the latest information or have questions, come to the [#local-workers](https://discord.com/channels/781145214752129095/1076124012305993768) channel in the [official discord](https://discord.gg/3DxrhksKzn).
 
 
 **Some important details you should know before you start:**
+
+> See [this important info](README.md/#important-info) first.
 
 - When submitting debug information **do not publish `.log` files in the server channels - send them to tazlin directly** as we cannot guarantee that your API key would not be in it (though, this warning should relax over time).
 - Workers especially interested in logs should note that there is a main log (`bridge.log`) and a log for each subprocess. `bridge_0.log` is the safety process, and all ones after that (`bridge_1.log`, `brige_2.log`, etc) are inference processes.
 - You could `Get-Content bridge_1.log -Wait` each log on windows , or `less +F bridge_1.log` on linux to monitor these logs.
 - **The worker does not download models on worker start** for the moment (this will change.) You can download all models configured in your bridge data by invoking `python download_models.py`.
-- Use a fresh bridge data file (`bridgeData_template.yaml` -> `bridgeData.yaml`).
-- Your memory usage will increase up until the number of queued jobs. Its my belief that you should set your queue size to at least 1, and if you're using any number of threads>1, queue size should be 2.
-  - Feel free to try queue size 2 with threads at one and let me know if your kudos/hr goes up or down.
-- If you have a **low amount of system memory** (16gb or under), do not attempt a queue size greater than 1 if you have more than one model set to load.
-- **If you plan on running SDXL**, you will need to ensure at least 9 gb of system ram remains free.
-- **If you have an 8 gb card**, SDXL will only reliably work at max_power values close to 32. 42 was too high for my 2080 in certain cases.
-- All workers with **less than 24gb VRAM** should **avoid running Stable Cascade 1.0**.
--
+
+
+## Advanced users, AMD ROCm inside Windows WSL:
+
+### Caveats and Limitations:
+> WSL will probably be slower than a native Linux System. Unless you have a lot of RAM, you might also run into memory issues. It might be neccessary to increase WSL memory limits or configure SWAP like described here: https://learn.microsoft.com/en-us/windows/wsl/wsl-config
+
+### System setup:
+* Make sure your Windows OS and AMD drivers are up to date.
+* You need to enable and install WSL on your system. Open a command prompt with Administrative privileges (search for cmd, then click "Run as Administrator")
+* Type the following to enable WSL and install an Ubuntu image:
+```
+wsl --install
+```
+* If WSL is already installed and enabled type the following to install an Ubuntu image:
+```
+wsl --install -d Ubuntu
+```
+* If you have previously used Ubuntu WSL, please reset the image (Note: this will delete the data inside the WSL image, make sure it's saved elsewhere):
+```
+wsl --unregister Ubuntu
+```
+* When the terminal asks you for a "unix username" type in a simple username. It will then ask for a password. Type in the password you want to use, press enter to confirm and repeat. It will not show any output, but your key presses are still registered.
+* To open your Ubuntu image after closing the terminal window you can search for `Ubuntu` in the Start Menu, or open a Termial and enter the command `wsl`
+
+### Ubuntu ROCm install:
+* First we need to update the image, then install ROCm. All these actions require root privileges, so switch to root for now and enter your password:
+```
+sudo su
+```
+* Now update the system and install a few tools:
+```
+apt update && apt full-upgrade -y && apt autopurge -y
+apt install -y curl git nano wget
+```
+* Now we can install ROCm. Command 3 will take a while to download and install everything:
+```
+wget -r -nd -np -A 'amdgpu-install*all.deb' "https://repo.radeon.com/amdgpu-install/6.2.3/ubuntu/noble/"
+apt-get install -y ./amdgpu-install*all.deb
+amdgpu-install -y --usecase=rocm,wsl --no-dkms
+```
+* We can now check whether ROCm was installed successfully with the `rocminfo` command.
+```
+rocminfo
+```
+* It should return something like:
+```
+WSL environment detected.
+=====================
+HSA System Attributes
+=====================
+Runtime Version:         1.1
+Runtime Ext Version:     1.6
+System Timestamp Freq.:  1000.000000MHz
+Sig. Max Wait Duration:  18446744073709551615 (0xFFFFFFFFFFFFFFFF) (timestamp count)
+Machine Model:           LARGE
+System Endianness:       LITTLE
+Mwaitx:                  DISABLED
+DMAbuf Support:          NO
+
+==========
+HSA Agents
+==========
+...
+```
+* Now type `exit` to leave the root shell
+```
+exit
+```
+
+### Installing the worker:
+* From here steps are the same as running on any other Linux System with AMD: [Installing](README.md/#linux)
+
+
 ## Advanced users, local install:
 
 ### Simple usage
 
 ### Prerequisites
 * Install [git](https://git-scm.com/) in your system.
-* Install CUDA if you haven't already.
+* Install CUDA/RoCM if you haven't already.
 * Install Python 3.10 or 3.11.
+* We **strongly recommend** you configure at least 8gb (preferably 16gb+) of memory swap space. This recommendation applies to linux too.
 * Clone the worker to your system
    `git clone https://github.com/Haidra-Org/horde-worker-reGen.git`
-- Returning workers upgrading from `AI-Horde-Worker`:
-  - If you did not set `cache_home` before, set it to your old `AI-Horde-Worker`folder for now to avoid redownloading models. IE, `cache_home: "C:/Horde/AI-Horde-Worker/nataili"` (or `models`, depending on when you first installed the worker).
-  - If you had previously set `cache_home`, set it to what you were using before.
 
 ### Setup venv
 - `python -m venv regen` (only needed the first time you follow these instructions)
@@ -39,65 +105,22 @@
 ### Get worker files and install dependencies
 - `git clone https://github.com/Haidra-Org/horde-worker-reGen.git`
 - `cd .\horde-worker-reGen\`
-- `pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu121`
+- Install the requirements:
+  - CUDA: `pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu124`
+  - RoCM: `pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/rocm6.2`
 
 ### Run worker
 - Set your config now, copying `bridgeData_template.yaml` to `bridgeData.yaml`, being sure to set an API key and worker name at a minimum
 - `python download_models.py` (**critical - must be run first every time**)
-  - Make sure the folders that are being downloaded to look correct.
 - `python run_worker.py` (to start working)
 
-Pressing control-c will have the worker complete any jobs in progress before ending. Please try and avoid hard killing it unless you are seeing many major errors. You can force kill by repeatedly pressing control-c or doing a SIGKILL.
+Pressing control-c will stop the worker but will first have the worker complete any jobs in progress before ending. Please try and avoid hard killing it unless you are seeing many major errors. You can force kill by repeatedly pressing control+c or doing a SIGKILL.
 
 ### Important note if manually manage your venvs
-- If you manually manage your venvs you should be running `python -m pip install -r requirements.txt -U` everytime you `git pull`.
-- `hordelib` has been renamed on pypi to `horde-engine`. The worker will no longer start if `hordelib` is installed. You must manually run `python -m pip uninstall hordelib -y` to be sure hordelib is uninstalled.
+- You should be running `python -m pip install -r requirements.txt -U https://download.pytorch.org/whl/cu124` every time you `git pull`. (Use `/whl/rocm6.2` instead if applicable)
 
 ## Advanced users, container install
 
 You can find the docker images at https://hub.docker.com/r/tazlin/horde-worker-regen/tags.
 
-> **Important**: Be sure to select the correct Cuda version for your machine. **The physical host must have at least the version of Cuda installed as the image**.
-
-You should set all of the settings for the docker worker via environment variables.
-
-A typical config might include (be sure to change any settings as appropriate as these settings will not work for every machine):
-
-```
-AIWORKER_API_KEY=your_api_key_here          # Important
-AIWORKER_CACHE_HOME=/workspace/models       # Important
-AIWORKER_DREAMER_NAME=your_worker_name_here # Important
-AIWORKER_ALLOW_CONTROLNET=True
-AIWORKER_ALLOW_LORA=True
-AIWORKER_MAX_LORA_CACHE_SIZE=50
-AIWORKER_ALLOW_PAINTING=True
-AIWORKER_MAX_POWER=38
-AIWORKER_MAX_THREADS=1 # Only set to 2 on high end or xx90 machines
-AIWORKER_MODELS_TO_LOAD=['TOP 3', 'AlbedoBase XL (SDXL)'] # Be mindful of download times; each model average 2-8 gb
-AIWORKER_MODELS_TO_SKIP=['pix2pix', 'SDXL_beta::stability.ai#6901']
-AIWORKER_QUEUE_SIZE=2
-AIWORKER_MAX_BATCH=4
-AIWORKER_SAFETY_ON_GPU=True
-AIWORKER_CIVITAI_API_TOKEN=your_token_here
-```
-
-See the bridgeData_template.yaml for more specific information.
-
-If you have a local install of the worker, you can use the script `convert_config_to_env.py` to convert a bridgeData.yaml to a valid .env file, as seen here:
-
-- update-runtime users, windows
-  ```
-  .\runtime.cmd python -s -m convert_config_to_env --file .\bridgeData.yaml
-  ```
-
-- update-runtime users, linux
-  ```
-  ./runtime.sh python -s -m convert_config_to_env --file .\bridgeData.yaml
-  ```
-
-- venv users
-  ```
-  python -m convert_config_to_env --file .\bridgeData.yaml
-  ```
-
-... which will write a file to your current working directory named `bridgeData.env`, which is suitable for passing to `docker run` with the `--env-file` cli option. Note that the models_to_load and models_to_skip will be resolved to a list of models if you specified a meta-load command such as `TOP 5` (it would write out the top 5 at that time, **not** the literal `TOP 5`). If you want the dynamic nature of those commands, you should specify them manually.
+See [Dockerfiles/README.md](Dockerfiles/README.md) for a detailed guide on the supported docker functionality.
