@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Determine if the user has a flash attention supported card.
-SUPPORTED_CARD=$(rocminfo | grep -c -e gfx1100 -e gfx1101 -e gfx1102)
-
-if [ "$SUPPORTED_CARD" -gt 0 ]; then
-    if ! python -s -m pip install -U git+https://github.com/ROCm/flash-attention@howiejay/navi_support; then
+if [ "${FLASH_ATTENTION_USE_TRITON_ROCM^^}" == "TRUE" ]; then
+	if ! pip install -U pytest git+https://github.com/ROCm/flash-attention@micmelesse/upstream_pr_rebase; then
 		echo "Tried to install flash attention and failed!"
 	else
 		echo "Installed flash attn."
@@ -14,7 +11,9 @@ if [ "$SUPPORTED_CARD" -gt 0 ]; then
 		else
 			echo "Installed AMD GO FAST."
 		fi
-    fi
+	fi
 else
-	echo "Did not detect support for AMD GO FAST"
+	echo "Did not detect support for AMD GO FAST. Cleaning up."
+ 	pip uninstall flash_attn
+	rm -f "${PY_SITE_DIR}"/hordelib/nodes/amd_go_fast.py
 fi
