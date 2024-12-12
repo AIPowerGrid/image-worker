@@ -1,12 +1,9 @@
-This repository allows you to set up a AI Horde Worker to generate, post-process or analyze images for others
+This repository allows you to set up a AI Power Grid Worker to generate, post-process or analyze images for others
 
 
-If you want the latest information or have questions, come to [the #local-workers channel in discord](https://discord.com/channels/781145214752129095/1076124012305993768)
+# AI Power Grid Worker reGen
 
-
-# AI Horde Worker reGen
-
-This repo contains the latest implementation for the [AI Horde](https://aihorde.net) Worker. This will turn your graphics card(s) into a worker for the AI Horde where you will create images for others. You you will receive in turn earn 'kudos' which will give you priority for your own generations.
+This repo contains the latest implementation for the AI Power Grid Worker. This will turn your graphics card(s) into a worker for the AI Power Grid where you will create images for others. You you will receive in turn earn 'kudos' which will give you priority for your own generations.
 
 ## Important Info
 
@@ -25,7 +22,7 @@ This repo contains the latest implementation for the [AI Horde](https://aihorde.
 ### AMD
 ~~Please note that **AMD cards are not currently well supported**, but may be in the future.~~
 
-> Update: **AMD** now has been shown to have better support but for **linux machines only** - linux must be installed on the bare metal machine; windows systems, WSL or linux containers still do not work. You can now follow this guide using  `horde-bridge-rocm.sh` and `update-runtime-rocm.sh` where appropriate.
+> Update: **AMD** now has been shown to have better support but for **linux machines only** - linux must be installed on the bare metal machine; windows systems, WSL or linux containers still do not work. You can now follow this guide using  `grid-bridge-rocm.sh` and `update-runtime-rocm.sh` where appropriate.
 
 If you are willing to try with your AMD card, join the [discord discussion](https://discord.com/channels/781145214752129095/1076124012305993768).
 
@@ -33,7 +30,7 @@ If you are willing to try with your AMD card, join the [discord discussion](http
 
 **Please see the prior section before proceeding.**
 
-If you haven't already, go to [AI Horde and register an account](https://aihorde.net/register), then store your API key somewhere secure. Treat your API key like a password. You will need it later in these instructions. This will allow your worker to gather kudos for your account.
+If you haven't already, go to [AI Power Grid and register an account](https://aigrid.net/register), then store your API key somewhere secure. Treat your API key like a password. You will need it later in these instructions. This will allow your worker to gather kudos for your account.
 
 
 ### Windows
@@ -48,31 +45,31 @@ This option is recommended as it will make keeping your repository up to date mu
 
 2. Using `cd`, navigate to a folder that you want the worker installed in.
 
-   - Note that the folder you are in will create a folder named `horde-worker-reGen`. This folder should not exist before you run the following commands.
-   - If you want it to be installed in `C:\horde\`, run the following:
+   - Note that the folder you are in will create a folder named `grid-worker-reGen`. This folder should not exist before you run the following commands.
+   - If you want it to be installed in `C:\grid\`, run the following:
 
      ```cmd
-     cd C:\horde
+     cd C:\grid
      ```
 
-     If the `horde` folder doesn't exist:
+     If the `grid` folder doesn't exist:
 
      ```cmd
      cd C:\
-     mkdir horde
-     cd C:\horde
+     mkdir grid
+     cd C:\grid
      ```
 
    - If you are using `cmd` and wish to install on a different drive, include the `/d` option, as so:
 
      ```cmd
-     cd /d G:\horde
+     cd /d G:\grid
      ```
 
-3. Run the following commands within the folder chosen (the folder `horde` if using the example above)
+3. Run the following commands within the folder chosen (the folder `grid` if using the example above)
     ```bash
-    git clone https://github.com/Haidra-Org/horde-worker-reGen.git
-    cd horde-worker-reGen
+    git clone https://github.com/Haidra-Org/grid-worker-reGen.git
+    cd grid-worker-reGen
     ```
 4. Continue with the [Basic Usage](#Basic-Usage) instructions
 
@@ -80,7 +77,7 @@ This option is recommended as it will make keeping your repository up to date mu
 
 Use these instructions if you do not have git for windows and do not want to install it. These instructions make updating the worker a bit more difficult down the line.
 
-1. Download [the zipped version](https://github.com/Haidra-Org/horde-worker-reGen/archive/refs/heads/main.zip)
+1. Download [the zipped version](https://github.com/Haidra-Org/grid-worker-reGen/archive/refs/heads/main.zip)
 1. Extract it to any folder of your choice
 1. Continue with the [Basic Usage](#Basic-Usage) instructions
 
@@ -99,7 +96,7 @@ Continue with the [Basic Usage](#basic-usage) instructions
 
 ### AMD
 
-**AMD** now has been shown to have better support but for **linux machines only** - it's best to have linux installed directly on your machine. [WSL support](README_advanced.md#advanced-users-amd-rocm-inside-windows-wsl) is highly experimental. You can now follow this guide using  `horde-bridge-rocm.sh` and `update-runtime-rocm.sh` where appropriate.
+**AMD** now has been shown to have better support but for **linux machines only** - it's best to have linux installed directly on your machine. [WSL support](README_advanced.md#advanced-users-amd-rocm-inside-windows-wsl) is highly experimental. You can now follow this guide using  `grid-bridge-rocm.sh` and `update-runtime-rocm.sh` where appropriate.
 
 If you are willing to try with your AMD card, join the [discord discussion](https://discord.com/channels/781145214752129095/1076124012305993768) in the [official discord](https://discord.gg/3DxrhksKzn).
 
@@ -158,13 +155,6 @@ Models are loaded as needed and just-in-time. You can offer as many models as yo
 
 ## Updating
 
-The grid workers are under constant improvement. You can follow progress [in our discord](https://discord.gg/3DxrhksKzn) and get notifications about updates there. If you are interested in receiving notifications for worker updates or betas, go to the [#get-roles channel](https://discord.com/channels/781145214752129095/977498954616954890) and get the appropriate role(s).
-
-The below instructions refers to `horde-bridge` or `update-runtime`. Depending on your OS, append `.cmd` for windows, or `.sh` for linux
-
-- For example, `horde-bridge.cmd` and `update-runtime.cmd` for windows with a NVIDIA card.
-- If you have an **AMD** card and you are on linux you should use `horde-bridge-rocm.sh` and `update-runtime-rocm.sh` where appropriate.
-  - All Windows AMD users should use WSL or [Docker](#docker).
 To update:
 
 1. Shut down your worker by pressing `Ctrl+C` once and waiting for the worker to stop.
@@ -178,7 +168,7 @@ You can double click the provided script files below from a file explorer or run
 Use this approach if you cloned the original repository using `git clone`
 
     1. Open a or `bash`, `cmd`, or `powershell` terminal depending on your OS
-    2. Navigate to the folder you have the AI Horde Worker repository installed if you're not already there.
+    2. Navigate to the folder you have the AI Power Grid Worker repository installed if you're not already there.
     3. run `git pull`
 
 #### zip method
@@ -186,11 +176,10 @@ Use this approach if you cloned the original repository using `git clone`
 Use this approach if you downloaded the git repository as a zip file and extracted it somewhere.
 
 
-    1. delete the `horde_worker_regen/` directory from your folder
-    1. Download the [repository from github as a zip file](https://github.com/db0/horde-worker-reGen/archive/refs/heads/main.zip)
-    1. Extract its contents into the same the folder you have the AI Horde Worker repository installed, overwriting any existing files
+    1. delete the `grid_worker_regen/` directory from your folder
+    1. Download the [repository from github as a zip file](https://github.com/db0/grid-worker-reGen/archive/refs/heads/main.zip)
+    1. Extract its contents into the same the folder you have the AI Power Grid Worker repository installed, overwriting any existing files
 
-See [Updating runtime](#updating-runtime)
 
 ### Updating runtime
 >
@@ -200,13 +189,12 @@ See [Updating runtime](#updating-runtime)
    - Some updates may not require this and the update notification will tell you if this is the case.
    - When in doubt, you should run it anyway.
    - **Advanced users**: If you do not want to use mamba or you are comfortable with python/venvs, see [README_advanced.md](README_advanced.md).
-1. Continue with [Starting/stopping](#startingstopping) instructions above
 
 # Custom Models
 
-You can host your own image models on the horde which are not available in our model reference, but this process is a bit more complex.
+You can host your own image models on the grid which are not available in our model reference, but this process is a bit more complex.
 
-To start with, you need to manually request the `customizer` role from then horde team. You can ask for it in the discord channel. This is a manually assigned role to prevent abuse of this feature.
+To start with, you need to manually request the `customizer` role from then grid team. You can ask for it in the discord channel. This is a manually assigned role to prevent abuse of this feature.
 
 Once you have the customizer role, you need to download the model files you want to host. Place them in any location on your system.
 
@@ -226,7 +214,7 @@ If everything was setup correctly, you should now see a `custom_models.json` in 
 Note that:
 
 * You cannot serve custom models with the same name as any of our regular models
-* The horde doesn't know your model, so it will treat it as a SD 1.5 model for kudos rewards and cannot warn people using the wrong parameters such as clip_skip
+* The grid doesn't know your model, so it will treat it as a SD 1.5 model for kudos rewards and cannot warn people using the wrong parameters such as clip_skip
 
 # Docker
 
