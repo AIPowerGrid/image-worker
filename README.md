@@ -45,31 +45,12 @@ This option is recommended as it will make keeping your repository up to date mu
 
 2. Using `cd`, navigate to a folder that you want the worker installed in.
 
-   - Note that the folder you are in will create a folder named `grid-worker-reGen`. This folder should not exist before you run the following commands.
-   - If you want it to be installed in `C:\grid\`, run the following:
+   - Note that the folder you are in will create a folder named `image-worker`
 
-     ```cmd
-     cd C:\grid
-     ```
-
-     If the `grid` folder doesn't exist:
-
-     ```cmd
-     cd C:\
-     mkdir grid
-     cd C:\grid
-     ```
-
-   - If you are using `cmd` and wish to install on a different drive, include the `/d` option, as so:
-
-     ```cmd
-     cd /d G:\grid
-     ```
-
-3. Run the following commands within the folder chosen (the folder `grid` if using the example above)
+3. Run the following commands within the folder chosen (the folder `image-worker` if using the example above)
     ```bash
-    git clone https://github.com/Haidra-Org/grid-worker-reGen.git
-    cd grid-worker-reGen
+    git clone https://github.com/AIPowerGrid/image-worker
+    cd image-worker
     ```
 4. Continue with the [Basic Usage](#Basic-Usage) instructions
 
@@ -77,7 +58,7 @@ This option is recommended as it will make keeping your repository up to date mu
 
 Use these instructions if you do not have git for windows and do not want to install it. These instructions make updating the worker a bit more difficult down the line.
 
-1. Download [the zipped version](https://github.com/Haidra-Org/grid-worker-reGen/archive/refs/heads/main.zip)
+1. Download [the zipped version](https://github.com/AIPowerGrid/image-worker/archive/refs/heads/main.zip)
 1. Extract it to any folder of your choice
 1. Continue with the [Basic Usage](#Basic-Usage) instructions
 
